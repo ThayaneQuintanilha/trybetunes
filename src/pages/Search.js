@@ -80,7 +80,7 @@ export default class search extends Component {
               {albumArray.map((album) => {
                 const { collectionId, collectionName, artworkUrl100 } = album;
                 return (
-                  <div key={ collectionName }>
+                  <div key={ collectionId }>
                     <img src={ artworkUrl100 } alt={ collectionName } />
                     <Link
                       to={ `/album/${collectionId}` }

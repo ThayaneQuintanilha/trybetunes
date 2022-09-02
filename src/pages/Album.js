@@ -3,15 +3,33 @@ import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import getMusics from '../services/musicsAPI';
 import MusicCard from '../components/MusicCard';
+import Loading from './Loading';
+import { addSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
 
 export default class Album extends Component {
   state = {
     album: [],
+    loading: false,
+    favorites: [],
   };
 
   async componentDidMount() {
+    await this.favoriteList();
     await this.handleChange();
   }
+
+  handleClick = async (object) => {
+    this.setState({ loading: true }, async () => {
+      await addSong(object);
+      await this.favoriteList();
+      this.setState({ loading: false });
+    });
+  };
+
+  favoriteList = async () => {
+    const apiFavorite = await getFavoriteSongs();
+    this.setState({ favorites: apiFavorite });
+  };
 
   handleChange = async () => {
     const { match: { params: { id } } } = this.props;
@@ -22,11 +40,11 @@ export default class Album extends Component {
   };
 
   render() {
-    const { album } = this.state;
-    console.log(album[0]);
+    const { album, loading, favorites } = this.state;
     return (
       <div data-testid="page-album">
         <Header />
+        {loading && <Loading />}
         {album.length > 0
         && (
           <div>
@@ -41,6 +59,10 @@ export default class Album extends Component {
           previewUrl={ albums.previewUrl }
           trackName={ albums.trackName }
           trackId={ albums.trackId }
+          albums={ albums }
+          handleClick={ this.handleClick }
+          favoriteList={ this.favoriteList }
+          favorites={ favorites }
         />)))}
       </div>
     );

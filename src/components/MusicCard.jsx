@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { removeSong } from '../services/favoriteSongsAPI';
 
 export default class MusicCard extends Component {
   render() {
@@ -32,7 +33,8 @@ export default class MusicCard extends Component {
                 await favoriteList();
               } }
               defaultChecked={ favorites.length > 0 && (
-                favorites.some((songs) => songs.trackId === albums.trackId)
+                favorites.some((songs) => songs.trackId === albums.trackId
+                && removeSong(songs))
               ) }
             />
           </label>
